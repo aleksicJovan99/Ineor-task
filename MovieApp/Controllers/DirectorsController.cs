@@ -17,7 +17,7 @@ public class DirectorsController : ControllerBase
         _mapper = mapper;
     }
 
-    // controller returns all directors from the database
+    // returns all directors from the database
     [HttpGet]
     public IActionResult GetMovies() 
     {
@@ -27,7 +27,7 @@ public class DirectorsController : ControllerBase
         return Ok(directorDto);     
     }
 
-    // controller returns one director with the corresponding ID from the database
+    // returns one director with the corresponding ID from the database
     [HttpGet("{id}")]
     public IActionResult GetDirector(int id)
     {
@@ -43,7 +43,7 @@ public class DirectorsController : ControllerBase
         }
     }
 
-    // controller stores the director entity in the database and returns the saved entity properties 
+    // stores the director entity in the database and returns the saved entity properties 
     [HttpPost]
     public IActionResult CreateDirector([FromBody] DirectorForCreationDto director) 
     {

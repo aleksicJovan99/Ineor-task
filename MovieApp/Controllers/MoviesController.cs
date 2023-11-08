@@ -17,17 +17,30 @@ public class MoviesController : ControllerBase
         _mapper = mapper;
     }
 
-    // controller returns all movies from the database
+    // returns all movies from the database
     [HttpGet]
     public IActionResult GetMovies() 
     {
         var movies = _repository.Movie.GetMovies();
-        var moviesDto = _mapper.Map<IEnumerable<MovieDto>>(movies); 
+        var directors = _repository.Director.GetDirectors();
+        var moviesDto = movies.Join(
+            directors,
+            m => m.DirectorId,
+            d => d.Id,
+            (m, d) => new 
+            {
+                Id = m.Id,
+                Name = m.Name,
+                Rating = m.Rating,
+                ReleaseDate = m.ReleaseDate,
+                Director = d.Name
+            }
+        ).ToList();
 
         return Ok(moviesDto);     
     }
 
-    // controller returns one movie with the corresponding ID from the database
+    // returns one movie with the corresponding ID from the database
     [HttpGet("{id}")]
     public IActionResult GetMovie(int id)
     {
@@ -43,7 +56,7 @@ public class MoviesController : ControllerBase
         }
     }
 
-    // controller stores the movie entity in the database and returns the stored properties of the entity
+    // stores the movie entity in the database and returns the stored properties of the entity
     [HttpPost]
     public IActionResult CreateMovie([FromBody]MovieForCreationDto movie) 
     {

@@ -7,7 +7,7 @@ public class MappingProfile : Profile
     public MappingProfile()
     {
         CreateMap<Movie, MovieDto>();
-        CreateMap<Director, DirectorDto>();
+        CreateMap<Director, MovieDto>();
         CreateMap<MovieForCreationDto, Movie>();
         CreateMap<DirectorForCreationDto, Director>();
     }
