@@ -25,4 +25,19 @@ public class MoviesController : ControllerBase
 
         return Ok(moviesDto);     
     }
+
+    [HttpGet("{id}")]
+    public IActionResult GetMovie(int id)
+    {
+        var movie = _repository.Movie.GetMovie(id);
+        if(movie == null) 
+        {
+            return NotFound();
+        }
+        else
+        {
+            var movieDto = _mapper.Map<MovieDto>(movie);
+            return Ok(movieDto);
+        }
+    }
 }
