@@ -42,4 +42,20 @@ public class MoviesController : ControllerBase
             return Ok(movieDto);
         }
     }
+
+    // controller stores the movie entity in the database and returns the stored properties of the entity
+    [HttpPost]
+    public IActionResult CreateMovie([FromBody]MovieForCreationDto movie) 
+    {
+        if(movie == null) return BadRequest("MovieForCreationDto object is null");
+
+        var movieEntity = _mapper.Map<Movie>(movie);
+
+        _repository.Movie.CreateMovie(movieEntity);
+        _repository.Save(); 
+
+        var toReturn = _mapper.Map<MovieDto>(movieEntity);
+
+        return Ok(toReturn);
+    }
 }

@@ -8,6 +8,8 @@ public class DirectorRepository : RepositoryBase<Director>, IDirectorRepository
     {
     }
 
+    public void CreateDirector(Director director) => Create(director);
+
     public Director GetDirector(int directorId) =>
         FindByCondition(d => d.Id.Equals(directorId))
         .SingleOrDefault();

@@ -43,4 +43,20 @@ public class DirectorsController : ControllerBase
         }
     }
 
+    // controller stores the director entity in the database and returns the saved entity properties 
+    [HttpPost]
+    public IActionResult CreateDirector([FromBody] DirectorForCreationDto director) 
+    {
+        if(director == null) return BadRequest("DirectorForCreationDto object is null");
+
+        var directorEntity = _mapper.Map<Director>(director);
+
+        _repository.Director.CreateDirector(directorEntity);
+        _repository.Save(); 
+
+        var toReturn = _mapper.Map<DirectorDto>(directorEntity);
+
+        return Ok(toReturn);
+    }
+
 }

@@ -8,6 +8,8 @@ public class MovieRepository : RepositoryBase<Movie>, IMovieRepository
     {
     }
 
+    public void CreateMovie(Movie movie) => Create(movie);
+
     public Movie GetMovie(int movieId) => FindByCondition(m => m.Id.Equals(movieId))
         .SingleOrDefault();
 
