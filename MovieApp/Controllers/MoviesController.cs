@@ -20,17 +20,9 @@ public class MoviesController : ControllerBase
     [HttpGet]
     public IActionResult GetMovies() 
     {
-        try 
-        {
-            var movies = _repository.Movie.GetMovies();
+        var movies = _repository.Movie.GetMovies();
+        var moviesDto = _mapper.Map<IEnumerable<MovieDto>>(movies); 
 
-            var moviesDto = _mapper.Map<IEnumerable<MovieDto>>(movies); 
-
-            return Ok(moviesDto);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, "Internal server error");
-        }
+        return Ok(moviesDto);     
     }
 }
