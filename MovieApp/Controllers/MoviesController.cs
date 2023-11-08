@@ -17,6 +17,7 @@ public class MoviesController : ControllerBase
         _mapper = mapper;
     }
 
+    // controller returns all movies from the database
     [HttpGet]
     public IActionResult GetMovies() 
     {
@@ -26,6 +27,7 @@ public class MoviesController : ControllerBase
         return Ok(moviesDto);     
     }
 
+    // controller returns one movie with the corresponding ID from the database
     [HttpGet("{id}")]
     public IActionResult GetMovie(int id)
     {
