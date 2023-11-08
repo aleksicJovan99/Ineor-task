@@ -1,4 +1,5 @@
-﻿using Contracts;
+﻿using AutoMapper;
+using Contracts;
 using Entities;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,10 +9,12 @@ namespace MovieApp;
 public class MoviesController : ControllerBase
 {
     private readonly IRepositoryManager _repository;
+    private readonly IMapper _mapper;
 
-    public MoviesController(IRepositoryManager repository)
+    public MoviesController(IRepositoryManager repository, IMapper mapper)
     {
         _repository = repository;
+        _mapper = mapper;
     }
 
     [HttpGet]
@@ -21,13 +24,7 @@ public class MoviesController : ControllerBase
         {
             var movies = _repository.Movie.GetMovies();
 
-            var moviesDto = movies.Select(m => new MovieDto 
-            {
-                Id = m.Id,
-                Name = m.Name,
-                Rating = m.Rating,
-                ReleaseDate = m.ReleaseDate
-            }).ToList(); 
+            var moviesDto = _mapper.Map<IEnumerable<MovieDto>>(movies); 
 
             return Ok(moviesDto);
         }
