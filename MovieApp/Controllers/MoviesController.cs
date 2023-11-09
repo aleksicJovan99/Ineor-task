@@ -29,13 +29,13 @@ public class MoviesController : ControllerBase
             d => d.Id,
             (m, d) => new 
             {
-                Id = m.Id,
-                Name = m.Name,
-                Rating = m.Rating,
-                ReleaseDate = m.ReleaseDate,
+                m.Id,
+                m.Name,
+                m.Rating,
+                m.ReleaseDate,
                 Director = d.Name
             }
-        ).ToList();
+        ).OrderBy(m => m.Id).ToList();
 
         return Ok(moviesDto);     
     }
@@ -70,5 +70,36 @@ public class MoviesController : ControllerBase
         var toReturn = _mapper.Map<MovieDto>(movieEntity);
 
         return Ok(toReturn);
+    }
+
+    [HttpPost("collection")]
+    public IActionResult CreateMovieCollection([FromBody]
+    IEnumerable<MovieForCreationDto> movieCollection) 
+    {
+        if(movieCollection == null) return BadRequest("Movie collection object is null");
+
+        var movies = _mapper.Map<IEnumerable<Movie>>(movieCollection);
+        foreach (var movie in movies) 
+        {
+            _repository.Movie.CreateMovie(movie);
+        }
+        _repository.Save(); 
+
+        var toReturn = _mapper.Map<IEnumerable<MovieDto>>(movies);
+
+        return CreatedAtRoute("MovieCollection" ,toReturn);
+    }
+
+    [HttpDelete]
+    public IActionResult DeleteMovie(int id) 
+    {
+        var movie = _repository.Movie.GetMovie(id);
+
+        if(movie == null) return NotFound();
+
+        _repository.Movie.DeleteMovie(movie);
+        _repository.Save();
+
+        return NoContent();
     }
 }

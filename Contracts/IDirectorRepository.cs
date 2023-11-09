@@ -6,4 +6,5 @@ public interface IDirectorRepository
     IEnumerable<Director> GetDirectors();
     Director GetDirector(int directorId);
     void CreateDirector(Director director);
+    void DeleteDirector(Director director);
 }

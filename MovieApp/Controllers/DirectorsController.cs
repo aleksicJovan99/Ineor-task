@@ -19,7 +19,7 @@ public class DirectorsController : ControllerBase
 
     // returns all directors from the database
     [HttpGet]
-    public IActionResult GetMovies() 
+    public IActionResult GetDirectors() 
     {
         var directors = _repository.Director.GetDirectors();
         var directorDto = _mapper.Map<IEnumerable<DirectorDto>>(directors); 
@@ -57,6 +57,19 @@ public class DirectorsController : ControllerBase
         var toReturn = _mapper.Map<DirectorDto>(directorEntity);
 
         return Ok(toReturn);
+    }
+
+    [HttpDelete]
+    public IActionResult DeleteDirector(int id) 
+    {
+        var director = _repository.Director.GetDirector(id);
+
+        if(director == null) return NotFound();
+
+        _repository.Director.DeleteDirector(director);
+        _repository.Save();
+
+        return NoContent();
     }
 
 }

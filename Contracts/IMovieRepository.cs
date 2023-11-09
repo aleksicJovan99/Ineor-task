@@ -6,4 +6,5 @@ public interface IMovieRepository
     IEnumerable<Movie> GetMovies();
     Movie GetMovie(int movieId);
     void CreateMovie(Movie movie);
+    void DeleteMovie(Movie movie);
 }
