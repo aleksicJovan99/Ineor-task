@@ -49,6 +49,7 @@ public class DirectorsController : ControllerBase
     public IActionResult CreateDirector([FromBody] DirectorForCreationDto director) 
     {
         if(director == null) return BadRequest("DirectorForCreationDto object is null");
+        if(!ModelState.IsValid) { return UnprocessableEntity(ModelState); }
 
         var directorEntity = _mapper.Map<Director>(director);
 
@@ -77,6 +78,8 @@ public class DirectorsController : ControllerBase
     public IActionResult UpdateDirector(int id, [FromBody] DirectorForUpdateDto director) 
     {
         if(director == null) return BadRequest("DirectorForUpdateDto object is null");
+        if(!ModelState.IsValid) { return UnprocessableEntity(ModelState); }
+
         
         var directorEntity = _repository.Director.GetDirector(id);
         if(directorEntity == null) return NotFound();

@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 namespace Entities;
-public class DirectorDto
+public class DirectorForManipulationDto
 {
-    public int Id { get; set; }
+    [Required(ErrorMessage = "Director name is required field")]
     public string? Name { get; set; }
 }

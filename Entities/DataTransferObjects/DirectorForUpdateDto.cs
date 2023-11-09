@@ -1,6 +1,6 @@
-﻿namespace Entities;
-public class DirectorForUpdateDto
-{
-    public string? Name { get; set; }
+﻿using System.ComponentModel.DataAnnotations;
 
+namespace Entities;
+public class DirectorForUpdateDto : DirectorForManipulationDto
+{
 }

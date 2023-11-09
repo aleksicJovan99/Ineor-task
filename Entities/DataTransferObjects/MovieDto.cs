@@ -6,7 +6,6 @@ public class MovieDto
     public int Id { get; set; }
     public string? Name { get; set; }
     public decimal Rating { get; set; }
-    [DataType(DataType.Date)]
-    [DisplayFormat(DataFormatString = "{0:MM-dd-yyyy}", ApplyFormatInEditMode = true)]
+    [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
     public DateTime ReleaseDate { get; set; }
 }

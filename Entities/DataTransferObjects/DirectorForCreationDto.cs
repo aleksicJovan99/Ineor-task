@@ -1,5 +1,6 @@
-﻿namespace Entities;
-public class DirectorForCreationDto
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Entities;
+public class DirectorForCreationDto : DirectorForManipulationDto
 {
-    public string? Name { get; set; }
 }

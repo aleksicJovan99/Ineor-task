@@ -62,6 +62,8 @@ public class MoviesController : ControllerBase
     {
         if(movie == null) return BadRequest("MovieForCreationDto object is null");
 
+        if(!ModelState.IsValid) { return UnprocessableEntity(ModelState); }
+
         var movieEntity = _mapper.Map<Movie>(movie);
 
         _repository.Movie.CreateMovie(movieEntity);
@@ -77,6 +79,8 @@ public class MoviesController : ControllerBase
     IEnumerable<MovieForCreationDto> movieCollection) 
     {
         if(movieCollection == null) return BadRequest("Movie collection object is null");
+        if(!ModelState.IsValid) { return UnprocessableEntity(ModelState); }
+
 
         var movies = _mapper.Map<IEnumerable<Movie>>(movieCollection);
         foreach (var movie in movies) 
@@ -107,7 +111,9 @@ public class MoviesController : ControllerBase
     public IActionResult UpdateMovie(int id, [FromBody] MovieForUpdateDto movie) 
     {
         if(movie == null) return BadRequest("MovieForUpdateDto object is null");
-        
+        if(!ModelState.IsValid) { return UnprocessableEntity(ModelState); }
+
+
         var movieEntity = _repository.Movie.GetMovie(id);
         if(movieEntity == null) return NotFound();
 
