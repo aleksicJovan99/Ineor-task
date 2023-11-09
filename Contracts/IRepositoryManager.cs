@@ -3,5 +3,5 @@ public interface IRepositoryManager
 {
     IMovieRepository Movie { get; }
     IDirectorRepository Director { get; }
-    void Save();
+    Task SaveAsync();
 }

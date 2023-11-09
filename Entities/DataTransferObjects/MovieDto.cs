@@ -8,4 +8,5 @@ public class MovieDto
     public decimal Rating { get; set; }
     [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
     public DateTime ReleaseDate { get; set; }
+    public string? DirectorName { get; set; }
 }

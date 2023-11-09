@@ -3,8 +3,8 @@
 namespace Contracts;
 public interface IMovieRepository
 {
-    IEnumerable<Movie> GetMovies();
-    Movie GetMovie(int movieId);
+    Task<IEnumerable<Movie>> GetMoviesAsync();
+    Task<Movie> GetMovieAsync(int movieId);
     void CreateMovie(Movie movie);
     void DeleteMovie(Movie movie);
 }

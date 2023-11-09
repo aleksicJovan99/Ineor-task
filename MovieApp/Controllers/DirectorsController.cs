@@ -19,10 +19,10 @@ public class DirectorsController : ControllerBase
 
     // returns all directors from the database
     [HttpGet]
-    public IActionResult GetDirectors() 
+    public async Task<IActionResult> GetDirectors() 
     {
-        var directors = _repository.Director.GetDirectors()
-            .OrderBy(d => d.Id);
+        var directors = await _repository.Director.GetDirectorsAsync();
+            
         var directorDto = _mapper.Map<IEnumerable<DirectorDto>>(directors); 
 
         return Ok(directorDto);     
@@ -30,9 +30,9 @@ public class DirectorsController : ControllerBase
 
     // returns one director with the corresponding ID from the database
     [HttpGet("{id}")]
-    public IActionResult GetDirector(int id)
+    public async Task<IActionResult> GetDirector(int id)
     {
-        var director = _repository.Director.GetDirector(id);
+        var director = await _repository.Director.GetDirectorAsync(id);
         if(director == null) 
         {
             return NotFound();
@@ -46,7 +46,7 @@ public class DirectorsController : ControllerBase
 
     // stores the director entity in the database and returns the saved entity properties 
     [HttpPost]
-    public IActionResult CreateDirector([FromBody] DirectorForCreationDto director) 
+    public async Task<IActionResult> CreateDirector([FromBody] DirectorForCreationDto director) 
     {
         if(director == null) return BadRequest("DirectorForCreationDto object is null");
         if(!ModelState.IsValid) { return UnprocessableEntity(ModelState); }
@@ -54,40 +54,40 @@ public class DirectorsController : ControllerBase
         var directorEntity = _mapper.Map<Director>(director);
 
         _repository.Director.CreateDirector(directorEntity);
-        _repository.Save(); 
+        await _repository.SaveAsync(); 
 
         var toReturn = _mapper.Map<DirectorDto>(directorEntity);
 
         return Ok(toReturn);
     }
 
-    [HttpDelete]
-    public IActionResult DeleteDirector(int id) 
-    {
-        var director = _repository.Director.GetDirector(id);
-
-        if(director == null) return NotFound();
-
-        _repository.Director.DeleteDirector(director);
-        _repository.Save();
-
-        return NoContent();
-    }
-
     [HttpPut("{id}")]
-    public IActionResult UpdateDirector(int id, [FromBody] DirectorForUpdateDto director) 
+    public async Task<IActionResult> UpdateDirector(int id, [FromBody] DirectorForUpdateDto director) 
     {
         if(director == null) return BadRequest("DirectorForUpdateDto object is null");
         if(!ModelState.IsValid) { return UnprocessableEntity(ModelState); }
 
-        
-        var directorEntity = _repository.Director.GetDirector(id);
+        var directorEntity = await _repository.Director.GetDirectorAsync(id);
         if(directorEntity == null) return NotFound();
 
         _mapper.Map(director, directorEntity);
-        _repository.Save();
+        await _repository.SaveAsync();
 
         return NoContent();
     }
+
+    [HttpDelete]
+    public async Task<IActionResult> DeleteDirector(int id) 
+    {
+        var director = await _repository.Director.GetDirectorAsync(id);
+
+        if(director == null) return NotFound();
+
+        _repository.Director.DeleteDirector(director);
+        await _repository.SaveAsync();
+
+        return NoContent();
+    }
+
 
 }

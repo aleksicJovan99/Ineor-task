@@ -1,5 +1,6 @@
 ﻿using Contracts;
 using Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Repository;
 public class DirectorRepository : RepositoryBase<Director>, IDirectorRepository
@@ -8,6 +9,15 @@ public class DirectorRepository : RepositoryBase<Director>, IDirectorRepository
     {
     }
 
+    public async Task<IEnumerable<Director>> GetDirectorsAsync() => 
+        await FindAll()
+        .OrderBy(d => d.Id)
+        .ToListAsync();
+
+    public async Task<Director> GetDirectorAsync(int directorId) =>
+        await FindByCondition(d => d.Id.Equals(directorId))
+        .SingleOrDefaultAsync();
+
     public void CreateDirector(Director director) => Create(director);
 
     public void DeleteDirector(Director director)
@@ -15,11 +25,7 @@ public class DirectorRepository : RepositoryBase<Director>, IDirectorRepository
         Delete(director);
     }
 
-    public Director GetDirector(int directorId) =>
-        FindByCondition(d => d.Id.Equals(directorId))
-        .SingleOrDefault();
 
-    public IEnumerable<Director> GetDirectors() => FindAll().OrderBy(d => d.Name);
     
     
 }

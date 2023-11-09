@@ -19,10 +19,10 @@ public class MoviesController : ControllerBase
 
     // returns all movies from the database
     [HttpGet]
-    public IActionResult GetMovies() 
+    public async Task<IActionResult> GetMovies() 
     {
-        var movies = _repository.Movie.GetMovies();
-        var directors = _repository.Director.GetDirectors();
+        var movies = await _repository.Movie.GetMoviesAsync();
+        var directors = await _repository.Director.GetDirectorsAsync();
         var moviesDto = movies.Join(
             directors,
             m => m.DirectorId,
@@ -42,9 +42,10 @@ public class MoviesController : ControllerBase
 
     // returns one movie with the corresponding ID from the database
     [HttpGet("{id}")]
-    public IActionResult GetMovie(int id)
+    public async Task<IActionResult> GetMovie(int id)
     {
-        var movie = _repository.Movie.GetMovie(id);
+        var movie = await _repository.Movie.GetMovieAsync(id);
+        var director = await _repository.Director.GetDirectorAsync(movie.DirectorId);
         if(movie == null) 
         {
             return NotFound();
@@ -52,13 +53,15 @@ public class MoviesController : ControllerBase
         else
         {
             var movieDto = _mapper.Map<MovieDto>(movie);
+            movieDto.DirectorName = director.Name;
+            
             return Ok(movieDto);
         }
     }
 
     // stores the movie entity in the database and returns the stored properties of the entity
     [HttpPost]
-    public IActionResult CreateMovie([FromBody]MovieForCreationDto movie) 
+    public async Task<IActionResult> CreateMovie([FromBody]MovieForCreationDto movie) 
     {
         if(movie == null) return BadRequest("MovieForCreationDto object is null");
 
@@ -67,7 +70,7 @@ public class MoviesController : ControllerBase
         var movieEntity = _mapper.Map<Movie>(movie);
 
         _repository.Movie.CreateMovie(movieEntity);
-        _repository.Save(); 
+        await _repository.SaveAsync(); 
 
         var toReturn = _mapper.Map<MovieDto>(movieEntity);
 
@@ -75,7 +78,7 @@ public class MoviesController : ControllerBase
     }
 
     [HttpPost("collection")]
-    public IActionResult CreateMovieCollection([FromBody]
+    public async Task<IActionResult> CreateMovieCollection([FromBody]
     IEnumerable<MovieForCreationDto> movieCollection) 
     {
         if(movieCollection == null) return BadRequest("Movie collection object is null");
@@ -87,7 +90,8 @@ public class MoviesController : ControllerBase
         {
             _repository.Movie.CreateMovie(movie);
         }
-        _repository.Save(); 
+
+        await _repository.SaveAsync(); 
 
         var toReturn = _mapper.Map<IEnumerable<MovieDto>>(movies);
 
@@ -95,30 +99,30 @@ public class MoviesController : ControllerBase
     }
 
     [HttpDelete]
-    public IActionResult DeleteMovie(int id) 
+    public async Task<IActionResult> DeleteMovie(int id) 
     {
-        var movie = _repository.Movie.GetMovie(id);
+        var movie = await _repository.Movie.GetMovieAsync(id);
 
         if(movie == null) return NotFound();
 
         _repository.Movie.DeleteMovie(movie);
-        _repository.Save();
+        await _repository.SaveAsync();
 
         return NoContent();
     }
 
     [HttpPut("{id}")]
-    public IActionResult UpdateMovie(int id, [FromBody] MovieForUpdateDto movie) 
+    public async Task<IActionResult> UpdateMovie(int id, [FromBody] MovieForUpdateDto movie) 
     {
         if(movie == null) return BadRequest("MovieForUpdateDto object is null");
         if(!ModelState.IsValid) { return UnprocessableEntity(ModelState); }
 
 
-        var movieEntity = _repository.Movie.GetMovie(id);
+        var movieEntity = await _repository.Movie.GetMovieAsync(id);
         if(movieEntity == null) return NotFound();
 
         _mapper.Map(movie, movieEntity);
-        _repository.Save();
+        await _repository.SaveAsync();
 
         return NoContent();
     }

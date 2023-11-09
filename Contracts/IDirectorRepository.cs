@@ -3,8 +3,8 @@
 namespace Contracts;
 public interface IDirectorRepository
 {
-    IEnumerable<Director> GetDirectors();
-    Director GetDirector(int directorId);
+    Task<IEnumerable<Director>> GetDirectorsAsync();
+    Task<Director> GetDirectorAsync(int directorId);
     void CreateDirector(Director director);
     void DeleteDirector(Director director);
 }
