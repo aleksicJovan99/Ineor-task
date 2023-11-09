@@ -24,6 +24,11 @@ public class MovieRepository : RepositoryBase<Movie>, IMovieRepository
     {
        Delete(movie);
     }
-        
-    
+
+    public async Task<IEnumerable<Movie>> GetMoviesPagingAsync(MovieParameters movieParameters) =>
+        await FindAll()
+        .OrderBy(m => m.Id)
+        .Skip((movieParameters.PageNumber - 1) * movieParameters.PageSize)
+        .Take(movieParameters.PageSize)
+        .ToListAsync();
 }

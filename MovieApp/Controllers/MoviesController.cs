@@ -40,6 +40,28 @@ public class MoviesController : ControllerBase
         return Ok(moviesDto);     
     }
 
+    [HttpGet("paging")]
+    public async Task<IActionResult> GetMoviesPaging([FromQuery]MovieParameters movieParameters) 
+    {
+        var movies = await _repository.Movie.GetMoviesPagingAsync(movieParameters);
+        var directors = await _repository.Director.GetDirectorsAsync();
+        var moviesDto = movies.Join(
+            directors,
+            m => m.DirectorId,
+            d => d.Id,
+            (m, d) => new 
+            {
+                m.Id,
+                m.Name,
+                m.Rating,
+                m.ReleaseDate,
+                Director = d.Name
+            }
+        ).OrderBy(m => m.Id).ToList();
+
+        return Ok(moviesDto);     
+    }
+
     // returns one movie with the corresponding ID from the database
     [HttpGet("{id}")]
     public async Task<IActionResult> GetMovie(int id)
