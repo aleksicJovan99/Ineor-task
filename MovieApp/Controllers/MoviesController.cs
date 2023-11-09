@@ -102,4 +102,18 @@ public class MoviesController : ControllerBase
 
         return NoContent();
     }
+
+    [HttpPut("{id}")]
+    public IActionResult UpdateMovie(int id, [FromBody] MovieForUpdateDto movie) 
+    {
+        if(movie == null) return BadRequest("MovieForUpdateDto object is null");
+        
+        var movieEntity = _repository.Movie.GetMovie(id);
+        if(movieEntity == null) return NotFound();
+
+        _mapper.Map(movie, movieEntity);
+        _repository.Save();
+
+        return NoContent();
+    }
 }

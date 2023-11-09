@@ -21,7 +21,8 @@ public class DirectorsController : ControllerBase
     [HttpGet]
     public IActionResult GetDirectors() 
     {
-        var directors = _repository.Director.GetDirectors();
+        var directors = _repository.Director.GetDirectors()
+            .OrderBy(d => d.Id);
         var directorDto = _mapper.Map<IEnumerable<DirectorDto>>(directors); 
 
         return Ok(directorDto);     
@@ -67,6 +68,20 @@ public class DirectorsController : ControllerBase
         if(director == null) return NotFound();
 
         _repository.Director.DeleteDirector(director);
+        _repository.Save();
+
+        return NoContent();
+    }
+
+    [HttpPut("{id}")]
+    public IActionResult UpdateDirector(int id, [FromBody] DirectorForUpdateDto director) 
+    {
+        if(director == null) return BadRequest("DirectorForUpdateDto object is null");
+        
+        var directorEntity = _repository.Director.GetDirector(id);
+        if(directorEntity == null) return NotFound();
+
+        _mapper.Map(director, directorEntity);
         _repository.Save();
 
         return NoContent();

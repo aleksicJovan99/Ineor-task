@@ -1,5 +1,6 @@
 ﻿namespace Entities;
-public class DirectorForCreationDto
+public class DirectorForUpdateDto
 {
     public string? Name { get; set; }
+
 }

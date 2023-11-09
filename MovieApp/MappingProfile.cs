@@ -10,6 +10,8 @@ public class MappingProfile : Profile
         CreateMap<Director, DirectorDto>();
         CreateMap<MovieForCreationDto, Movie>();
         CreateMap<DirectorForCreationDto, Director>();
+        CreateMap<MovieForUpdateDto, Movie>();
+        CreateMap<DirectorForUpdateDto, Director>();
     }
 
 }
