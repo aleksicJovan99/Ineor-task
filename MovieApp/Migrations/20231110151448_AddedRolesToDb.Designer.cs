@@ -3,6 +3,7 @@ using System;
 using Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MovieApp.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    partial class RepositoryContextModelSnapshot : ModelSnapshot
+    [Migration("20231110151448_AddedRolesToDb")]
+    partial class AddedRolesToDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -82,14 +85,15 @@ namespace MovieApp.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("FullName")
-                        .HasColumnType("longtext");
-
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
@@ -158,15 +162,15 @@ namespace MovieApp.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "34b18a4f-4ddd-45b5-be09-2bef8a389100",
-                            Name = "User",
-                            NormalizedName = "USER"
+                            Id = "e5082ec3-3d8a-4b08-84d1-247cd4fa1c46",
+                            Name = "Manager",
+                            NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "16ed0077-cb54-48ba-8fda-12462b4d9afc",
-                            Name = "Admin",
-                            NormalizedName = "ADMIN"
+                            Id = "61e40310-ad86-4a24-99d4-c87bd147b01a",
+                            Name = "Administrator",
+                            NormalizedName = "ADMINISTRATOR"
                         });
                 });
 

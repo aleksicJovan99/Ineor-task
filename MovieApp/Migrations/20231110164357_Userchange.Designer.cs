@@ -3,6 +3,7 @@ using System;
 using Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MovieApp.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    partial class RepositoryContextModelSnapshot : ModelSnapshot
+    [Migration("20231110164357_Userchange")]
+    partial class Userchange
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -81,9 +84,6 @@ namespace MovieApp.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("FullName")
-                        .HasColumnType("longtext");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("tinyint(1)");
@@ -158,13 +158,13 @@ namespace MovieApp.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "34b18a4f-4ddd-45b5-be09-2bef8a389100",
+                            Id = "0892d8e1-33ce-4101-8108-7804b7295cc4",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "16ed0077-cb54-48ba-8fda-12462b4d9afc",
+                            Id = "b3c14a0d-5424-4227-bad9-3453aab42617",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });
