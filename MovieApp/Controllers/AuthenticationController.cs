@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Contracts;
 using Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -10,10 +11,12 @@ public class AuthenticationController : ControllerBase
 {
     private readonly IMapper _mapper;
     private readonly UserManager<User> _userManager;
-    public AuthenticationController (IMapper mapper, UserManager<User> userManager) 
+    private readonly IAuthenticationManager _authManager;
+    public AuthenticationController (IMapper mapper, UserManager<User> userManager, IAuthenticationManager authManager) 
     {
         _mapper = mapper;
         _userManager = userManager;
+        _authManager = authManager;
     }
 
     [HttpPost]
@@ -34,6 +37,14 @@ public class AuthenticationController : ControllerBase
             await _userManager.AddToRolesAsync(user, userForRegistration.Roles); 
             
             return StatusCode(201);
+    }
+
+    [HttpPost("login")]
+    public async Task<IActionResult> Authenticate([FromBody] UserForAuthenticationDto user)
+    {
+        if (!await _authManager.ValidateUser(user)) return Unauthorized();
+        
+        return Ok(new { Token = await _authManager.CreateToken() }); 
     } 
     
 }

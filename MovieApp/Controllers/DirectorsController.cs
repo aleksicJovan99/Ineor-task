@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Contracts;
 using Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MovieApp;
@@ -18,7 +19,7 @@ public class DirectorsController : ControllerBase
     }
 
     // returns all directors from the database
-    [HttpGet]
+    [HttpGet(Name = "Get Directors")]
     public async Task<IActionResult> GetDirectors() 
     {
         var directors = await _repository.Director.GetDirectorsAsync();
@@ -45,7 +46,7 @@ public class DirectorsController : ControllerBase
     }
 
     // stores the director entity in the database and returns the saved entity properties 
-    [HttpPost]
+    [HttpPost(Name = "CreatedDirector")]
     public async Task<IActionResult> CreateDirector([FromBody] DirectorForCreationDto director) 
     {
         if(director == null) return BadRequest("DirectorForCreationDto object is null");
@@ -58,10 +59,10 @@ public class DirectorsController : ControllerBase
 
         var toReturn = _mapper.Map<DirectorDto>(directorEntity);
 
-        return Ok(toReturn);
+        return CreatedAtRoute("Get Directors" ,toReturn);
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("{id}"), Authorize(Roles = "Admin")]
     public async Task<IActionResult> UpdateDirector(int id, [FromBody] DirectorForUpdateDto director) 
     {
         if(director == null) return BadRequest("DirectorForUpdateDto object is null");
@@ -76,7 +77,7 @@ public class DirectorsController : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete]
+    [HttpDelete("{id}"), Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteDirector(int id) 
     {
         var director = await _repository.Director.GetDirectorAsync(id);

@@ -1,10 +1,15 @@
-﻿using Entities;
+﻿using System.Text;
+using Entities;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace MovieApp;
 public static class ServiceExtensions
 {
+    // Configures Cross-Origin Resource Sharing (CORS)
     public static void ConfigureCors(this IServiceCollection services) => 
         services.AddCors(options =>
         {
@@ -14,6 +19,7 @@ public static class ServiceExtensions
                 .AllowAnyHeader());
         });
 
+    // Configures the SQL database context
     public static void ConfigureSqlContext(this IServiceCollection services,
     IConfiguration configuration) => 
         services.AddDbContext<RepositoryContext>(options =>
@@ -21,7 +27,8 @@ public static class ServiceExtensions
             new MySqlServerVersion(new Version(8, 0, 27)), b =>
             b.MigrationsAssembly("MovieApp"))
         );
-    
+
+    // Configures Identity
     public static void ConfigureIdentity(this IServiceCollection services) 
     {
         var builder = services.AddIdentityCore<User>(o => {
@@ -36,6 +43,32 @@ public static class ServiceExtensions
         builder = new IdentityBuilder(builder.UserType, typeof(IdentityRole), builder.Services);
         builder.AddEntityFrameworkStores<RepositoryContext>()
             .AddDefaultTokenProviders();
+    }
+
+    // Configures JSON Web Token (JWT) authentication
+    public static void ConfigureJWT(this IServiceCollection services, 
+    IConfiguration configuration) 
+    {
+        var jwtSettings = configuration.GetSection("JwtSettings");
+        var secretKey = configuration.GetSection("AppSettings:Token").Value!;
+
+        services.AddAuthentication(o => {
+            o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        .AddJwtBearer(options => 
+        {
+            options.TokenValidationParameters = new TokenValidationParameters 
+            {
+                ValidateIssuer = false, 
+                ValidateAudience = true, 
+                ValidateLifetime = true, 
+                ValidateIssuerSigningKey = true,
+                //ValidIssuer = jwtSettings.GetSection("validIssuer").Value, 
+                ValidAudience = jwtSettings.GetSection("validAudience").Value, 
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)) 
+            };
+        });
     }
 
 }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Contracts;
 using Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MovieApp;
@@ -18,7 +19,7 @@ public class MoviesController : ControllerBase
     }
 
     // returns all movies from the database
-    [HttpGet]
+    [HttpGet(Name = "Get Movies")]
     public async Task<IActionResult> GetMovies() 
     {
         var movies = await _repository.Movie.GetMoviesAsync();
@@ -40,6 +41,7 @@ public class MoviesController : ControllerBase
         return Ok(moviesDto);     
     }
 
+    // returns movies from database in page format
     [HttpGet("paging")]
     public async Task<IActionResult> GetMoviesPaging([FromQuery]MovieParameters movieParameters) 
     {
@@ -96,9 +98,10 @@ public class MoviesController : ControllerBase
 
         var toReturn = _mapper.Map<MovieDto>(movieEntity);
 
-        return Ok(toReturn);
+        return CreatedAtRoute("Get Movies", toReturn);
     }
 
+    // stores the movie list entity in the database and returns the stored properties of the entity
     [HttpPost("collection")]
     public async Task<IActionResult> CreateMovieCollection([FromBody]
     IEnumerable<MovieForCreationDto> movieCollection) 
@@ -117,10 +120,11 @@ public class MoviesController : ControllerBase
 
         var toReturn = _mapper.Map<IEnumerable<MovieDto>>(movies);
 
-        return CreatedAtRoute("MovieCollection" ,toReturn);
+        return CreatedAtRoute("Get Movies" ,toReturn);
     }
 
-    [HttpDelete]
+    // deletes the movie entity from the database
+    [HttpDelete("{id}"), Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteMovie(int id) 
     {
         var movie = await _repository.Movie.GetMovieAsync(id);
@@ -133,7 +137,8 @@ public class MoviesController : ControllerBase
         return NoContent();
     }
 
-    [HttpPut("{id}")]
+    // updates the movie entity from the database
+    [HttpPut("{id}"), Authorize(Roles = "Admin")]
     public async Task<IActionResult> UpdateMovie(int id, [FromBody] MovieForUpdateDto movie) 
     {
         if(movie == null) return BadRequest("MovieForUpdateDto object is null");
