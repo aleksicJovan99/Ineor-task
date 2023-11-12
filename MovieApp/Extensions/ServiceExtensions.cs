@@ -14,9 +14,7 @@ public static class ServiceExtensions
         services.AddCors(options =>
         {
             options.AddPolicy("CorsPolicy", builder => 
-            builder.AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader());
+            builder.WithOrigins("http://localhost:4200").AllowAnyMethod().AllowAnyHeader());
         });
 
     // Configures the SQL database context

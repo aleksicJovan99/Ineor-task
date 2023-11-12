@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MovieApp;
-[Route("api/authetication")]
+[Route("api/authentication")]
 [ApiController]
 public class AuthenticationController : ControllerBase
 {
