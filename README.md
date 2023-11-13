@@ -1,5 +1,3 @@
-to start
-
 Database used is MySQL
 
 change connection string
