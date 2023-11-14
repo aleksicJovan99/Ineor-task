@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using MovieApp;
 using Repository;
+using Services;
 using Swashbuckle.AspNetCore.Filters;
 using AuthenticationManager = MovieApp.AuthenticationManager;
 
@@ -12,6 +13,7 @@ builder.Services.ConfigureCors();
 builder.Services.ConfigureSqlContext(builder.Configuration);
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
+builder.Services.AddScoped<IMovieService, MovieService>();
 builder.Services.AddScoped<IAuthenticationManager, AuthenticationManager>();
 builder.Services.AddAuthentication();
 builder.Services.ConfigureIdentity();
